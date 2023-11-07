@@ -9,19 +9,5 @@ plugins:
     opt: 
       - json
       - docs.json
-  - plugin: buf.build/grpc/go:v1.3.0
-    out: /gen2/go
-  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.18.0
-    out: gen/openapiv2
-    opt:
-      - allow_merge=true
-      - use_go_templates=true
-  - plugin: buf.build/community/google-gnostic-openapi:v0.7.0
-    out: /gen3/gnostic
-    opt: 
-      - version=1.2.3
-      - title=Ganymede API
-      - description=Ganymede API Description
-      - naming=json
-      - enum_type=string
+
 
