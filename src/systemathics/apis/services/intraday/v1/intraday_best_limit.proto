@@ -1,0 +1,92 @@
+// Copyright (c) 2021 Systemathics
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// Best limit data represent the highest bid and lowest ask prices in the market at any given time, providing valuable insights into the current state of supply and demand.
+syntax = "proto3";
+
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+import "systemathics/apis/type/shared/v1/identifier.proto";
+import "systemathics/apis/type/shared/v1/date_interval.proto";
+import "systemathics/apis/type/shared/v1/sampling.proto";
+
+package systemathics.apis.services.intraday.v1;
+
+// This service serves as a gateway to an intraday Best Limit market data service, allowing users to access historical data on the best limit order levels for various financial instruments. 
+service IntradayBestLimitsService
+{
+  // Gets intraday historical data: date, bid and ask
+  rpc IntradayBestLimits(IntradayBestLimitsRequest) returns (IntradayBestLimitsResponse)
+  {
+	  	 option (google.api.http) = {
+			get: "/v1/intraday/bestlimits"
+		 };
+  }
+}
+
+// The required input to request the IntradayBestLimitsService.
+message IntradayBestLimitsRequest
+{
+	// [Mandatory] The instrument identifier: a ticker and exchange
+	systemathics.apis.type.shared.v1.Identifier identifier = 1;
+
+	// [Mandatory] The sampling interval
+	systemathics.apis.type.shared.v1.Sampling sampling = 2;
+
+	// [Optional] The time constraints used to define the look-back period.
+	// If empty, then all the available data is retrieved.
+	systemathics.apis.type.shared.v1.DateInterval date_interval = 3;
+
+	// [Optional] The corporate action adjustment (dividends and splits).
+	// By default the value is set to false
+	bool adjustment = 4;
+}
+
+// The intraday bestlimits response contains an array of intraday bestlimits.
+message IntradayBestLimitsResponse
+{
+	// The intraday bestlimits: an array of IntradayBestLimit objects
+	repeated IntradayBestLimit data = 1;
+}
+
+// Contains the intraday bar's data: date, bid, ask and score.
+message IntradayBestLimit 
+{
+	// Time stamp of the intraday bar : open time of the sampling interval
+	google.protobuf.Timestamp time_stamp = 1;
+	
+	// The best bid price of the sampling period
+	double BidPrice = 2;
+	
+	// The best bid size of the sampling period
+	double BidSize = 3;
+	
+	// The best ask price of the sampling period
+	double AskPrice = 4;
+	
+	// The best ask size of the sampling period
+	double AskSize = 5;
+	
+	// The data quality scoring : from 0 (bad) to 100 (good)
+	double score = 6;
+}
+ 
