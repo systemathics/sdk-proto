@@ -636,6 +636,9 @@ message EquityEntry
 
   // Top analyst performance rankings based on total rate of return
   repeated AnalystPerformance top_analyst_performance_rank_trr = 68;
+
+  // Listed mic
+  repeated string listed_mic = 69;
 }
 
     
