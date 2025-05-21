@@ -46,6 +46,13 @@ service IntradayBarsService
 			get: "/v1/intraday/bars"
 		 };
   }
+
+  rpc IntradayBarsStream(IntradayBarsRequest) returns (stream IntradayBar)
+  {
+	  	 option (google.api.http) = {
+			get: "/v1/intraday/bars"
+		 };
+  }
 }
 
 // The required input to request the IntradayBarsService.
