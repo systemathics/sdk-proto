@@ -34,6 +34,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 
 import "systemathics/apis/services/static_data/v1/static_data.proto";
+import "systemathics/apis/type/shared/v1/asset.proto";
 
 package systemathics.apis.services.static_data.v1;
 
@@ -41,174 +42,84 @@ package systemathics.apis.services.static_data.v1;
 service SetStaticDataService
 {
   // Create Cds Index Option Static data 
-  rpc CreateCdsIndexOption(CreateCdsIndexOptionRequest) returns (CdsIndexOptionIdResponse)
+  rpc Create(CreateAssetRequest) returns (Asset)
   {
           option (google.api.http) = {
-            post: "/v1/staticdata/otc_streaming"
+            post: "/v1/staticdata/{asset}"
         };
   }
 
 
   // Get Cds Index Option Static data by Id
-  rpc GetCdsIndexOption(CdsIndexOptionIdRequest) returns (CdsIndexOptionIdResponse)
+  rpc GetOne(AssetIdRequest) returns (Asset)
   {
           option (google.api.http) = {
-            post: "/v1/staticdata/otc_streaming/{id}"
+            get: "/v1/staticdata/{asset}/{id}"
         };
   }
 
   // Get all Cds Index Option Static data
-  rpc GetAllCdsIndexOption(google.protobuf.Empty) returns (stream CdsIndexOptionIdResponse)
+  rpc GetAll(AssetTypeRequest) returns (stream Asset)
   {
           option (google.api.http) = {
-            get: "/v1/staticdata/otc_streaming"
+            get: "/v1/staticdata/{asset}"
         };
   }
 
-  // Update Cds Index Option Static data by Id
-  rpc UpdateCdsIndexOption(UpdateCdsIndexOptionRequest) returns (CdsIndexOptionIdResponse)
+  // Update an Asset by Id
+  rpc Update(Asset) returns (Asset)
   {
         option (google.api.http) = {
-            put: "/v1/staticdata/otc_streaming/{id}"
+            put: "/v1/staticdata/{asset}/{id}"
         };
   }
 
   // Get Option Static data from OTC Streaming by Id
-  rpc DeleteCdsIndexOption(CdsIndexOptionIdRequest) returns (google.protobuf.Empty)
+  rpc Delete(AssetIdRequest) returns (google.protobuf.Empty)
   {
           option (google.api.http) = {
-            delete: "/v1/staticdata/otc_streaming/{id}"
+            delete: "/v1/staticdata/{asset}/{id}"
         };
   }
 }
 
 
-message CdsIndexOptionIdRequest
-{
-    // [Mandatory] The Id of the static data to delete.
-    int64 id = 1;
+message AssetTypeRequest
+{    
+    // [Mandatory] The asset type of the static data.
+    systemathics.apis.type.shared.v1.AssetType asset_type = 1;
 }
 
-
-// Static data update message message for OTC Streaming data
-message UpdateCdsIndexOptionRequest
+message AssetIdRequest
 {
-    // [Mandatory] The Id of the static data to delete
+    // [Mandatory] The Id of the static data.
     int64 id = 1;
 
-    // [Optional] Bloomberg Ticker. Set it only if it needs to be modified.
-    string ticker = 2;
-
-    // [Optional] Provider, usually the bank contributing. Set it only if it needs to be modified.
-    string provider = 3;
-
-    // [Optional] Strike of the option. Set it only if it needs to be modified.
-    google.protobuf.DoubleValue strike = 4;
-
-    // [Optional] Swaption type (Payer or Receiver). Set it only if it needs to be modified.
-    SwaptionType swaption_type = 5;
-
-    // [Optional] Expiry date or maturity date of the option. Set it only if it needs to be modified.
-    google.type.Date expiry = 6;
-
-    // [Optional] Bloomberg Ticker of the underlying. Set it only if it needs to be modified.
-    string underlying_ticker = 7;
-
-    // [Optional] Currency of the option. Set it only if it needs to be modified.
-    string currency = 8;
-
-    // [Optional] Version of the CDS index
-    int32 version = 9;
-
-    // [Optional] FIGI code of the option. Set it only if it needs to be modified.
-    string figi = 10;
-
-    // [Optional] Trading calendar the option. Set it only if it needs to be modified.
-    string calendar = 11;
-
-    // [Optional] The Otc Streaming Id. Set it only if it needs to be modified.
-    string otc_streaming_id = 12;
+    // [Mandatory] The asset type of the static data.
+    systemathics.apis.type.shared.v1.AssetType asset_type = 2;
 }
 
-// Static data creation message for OTC Streaming data
-message CreateCdsIndexOptionRequest
+message CreateAssetRequest
 {
-    // [Mandatory] Bloomberg Ticker 
-    string ticker = 1;
+    // Validity Date
+    google.type.Date validity = 1;
 
-    // [Mandatory] Provider, usually the bank contributing
-    string provider = 2;
-
-    // [Mandatory] Strike of the option
-    double strike = 3;
-
-    // [Mandatory] Swaption type (Payer or Receiver)
-    SwaptionType swaption_type = 4;
-
-    // [Mandatory] Expiry date or maturity date of the option.
-    google.type.Date expiry = 5;
-
-    // [Mandatory] Bloomberg Ticker of the underlying
-    string underlying_ticker = 6;
-
-    // [Mandatory] Currency of the option
-    string currency = 7;
-
-    // [Mandatory] Version of the CDS index
-    int32 version = 8;
-
-    // [Optional] FIGI code of the option
-    string figi = 9;
-
-    // [Optional] Trading calendar the option
-    string calendar = 10;
-
-     // [Mandatory] The Otc Streaming Id
-    string otc_streaming_id = 11;
+    oneof asset {
+        systemathics.apis.services.static_data.v1.CdsIndexEntry cds_index = 2;
+    }
 }
 
-
-message CdsIndexOptionIdResponse
+message Asset
 {
-    // The Id of the static data
-    int64 id = 1;
+    // Id
+    int64 id  = 1;
 
-    // Creation date
-    google.type.DateTime creation_date = 2;
+    // Validity Date
+    google.type.Date validity = 2;
 
-    // Update date
-    google.type.DateTime update_date = 3;
-
-    // Bloomberg Ticker 
-    string ticker = 4;
-
-    // The Provider, usually the bank contributing
-    string provider = 5;
-
-    // The Strike of the option
-    double strike = 6;
-
-    // The Swaption type (Payer or Receiver)
-    SwaptionType swaption_type = 7;
-
-    // The expiry date or maturity date of the option.
-    google.type.Date expiry = 8;
-
-    // The Bloomberg Ticker of the underlying
-    string underlying_ticker = 9;
-
-    // The Currency of the option
-    string currency = 10;
-
-    // Version of the CDS index
-    int32 version = 11;
-
-    // FIGI code of the option
-    string figi = 12;
-
-    // Trading calendar the option
-    string calendar = 13;
-
-    // The Otc Streaming Id
-    string otc_streaming_id = 14;
+    oneof asset {
+        systemathics.apis.services.static_data.v1.CdsIndexEntry cds_index = 3;
+    }
 }
+
+
