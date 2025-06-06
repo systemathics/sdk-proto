@@ -230,7 +230,7 @@ message VectorKey {
 }
  
 
-// Represent the data to be added to the data scalar timeseries.
+// Represent the data to be added to the data vector timeseries.
 message SetTickVectorData
 {
 	// [Mandatory] The date used to request data.

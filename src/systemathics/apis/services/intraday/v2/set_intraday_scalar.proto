@@ -36,40 +36,155 @@ import "systemathics/apis/type/shared/v2/set_data_mode.proto";
 package systemathics.apis.services.intraday.v2;
 
 // Called to set intraday prices data and clear. 
-service SetIntradayScalarService
+service SetIntradayService
 {
   // Sets intraday scalar timeseries.
-  rpc SetIntradayScalar(stream SetIntradayScalarRequest) returns (google.protobuf.Empty)
+  rpc WriteIntradayScalar(SetIntradayScalarRequest) returns (google.protobuf.Empty)
   {
 	  option (google.api.http) = {
-			post: "/v2/intraday"
+			post: "/v2/intraday_scalar"
+	  };
+  }
+  
+  rpc WriteIntradayScalarStream(stream SetIntradayScalarStreamRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			post: "/v2/intraday_scalar"
+	  };
+  }
+
+  // Sets intraday vector timeseries.
+  rpc WriteIntradayVector(SetIntradayVectorRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			post: "/v2/intraday_vector"
+	  };
+  }
+
+  // Sets intraday vector timeseries.
+  rpc WriteIntradayVectorStream(stream SetIntradayVectorStreamRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			post: "/v2/intraday_vector"
+	  };
+  }
+
+  // Update intraday scalar timeseries.
+  rpc UpdateIntradayScalar(SetIntradayScalarRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			put: "/v2/intraday_scalar"
+	  };
+  }
+
+  // Update intraday scalar timeseries.
+  rpc UpdateIntradayScalarStream(stream SetIntradayScalarStreamRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			put: "/v2/intraday_scalar"
+	  };
+  }
+
+  
+  // Update intraday vectors timeseries.
+  rpc UpdateIntradayVector(SetIntradayVectorRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			put: "/v2/intraday_vector"
+	  };
+  }
+
+    // Update intraday vectors timeseries.
+  rpc UpdateIntradayVectorStream(stream SetIntradayVectorStreamRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			put: "/v2/intraday_vector"
 	  };
   }
 
   // Delete intraday scalar timeseries.
-  rpc ClearIntradayScalar(ClearIntradayScalarRequest) returns (google.protobuf.Empty)
+  rpc DeleteIntradayScalar(DeleteIntradayScalarRequest) returns (google.protobuf.Empty)
   {
 	  option (google.api.http) = {
-			delete: "/v2/intraday"
+			delete: "/v2/intraday_scalar"
+	  };
+  }
+
+    // Delete intraday scalar timeseries.
+  rpc DeleteIntradayVector(DeleteIntradayVectorRequest) returns (google.protobuf.Empty)
+  {
+	  option (google.api.http) = {
+			delete: "/v2/intraday_vector"
 	  };
   }
 }
 
+// The required input to request the SetDailyScalar endpoint
+message SetIntradayScalarRequest
+{
+	// [Mandatory] The instrument identifiers: a bloomberg dailyer and an asset type
+	systemathics.apis.type.shared.v1.Identifier identifier = 1;
+
+	// [Mandatory] The sampling interval
+	systemathics.apis.type.shared.v1.Sampling sampling = 2;
+
+	// [Mandatory] The date used to request data.
+	google.type.DateTime datetime = 3;	
+
+	// [Mandatory] The data with field as a key
+	map<string, double> data = 4;
+}
+
+
 
 // The required input to request the SetIntradayScalar endpoint
-message SetIntradayScalarRequest
+message SetIntradayScalarStreamRequest
 {
 	oneof payload 
 	{
 		// The intraday info
-		SetIntradayScalarInfo info = 1;
+		SetIntradayInfo info = 1;
 		
 		// The mapping data
 		SetIntradayScalarData data = 2;
 	}
 }
-// The required input to request ClearIntradayScalar.
-message ClearIntradayScalarRequest 
+
+
+// The required input to request the SetIntradayScalar endpoint
+message SetIntradayVectorRequest
+{
+	// [Mandatory] The instrument identifiers: a bloomberg ticker and an asset type
+	systemathics.apis.type.shared.v1.Identifier identifier = 1;
+
+	// [Mandatory] The sampling interval
+	systemathics.apis.type.shared.v1.Sampling sampling = 2;
+
+	// [Mandatory] The date used to request data.
+	google.type.DateTime datetime = 3;	
+
+	// [Mandatory] The vector key.
+	string key = 4;
+
+	// [Mandatory] The data with field as a key
+	map<string, double> data = 5;
+}
+
+// The required input to request the SetIntradayScalar endpoint
+message SetIntradayVectorStreamRequest
+{
+	oneof payload 
+	{
+		// The tick info
+		SetIntradayInfo info = 1;
+		
+		// The mapping data
+		SetIntradayVectorData data = 2;
+	}
+}
+
+// The required input to request DeleteIntradayScalar.
+message DeleteIntradayScalarRequest 
 {
 	// [Mandatory] The instrument identifiers: a bloomberg ticker and an asset type
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
@@ -79,10 +194,31 @@ message ClearIntradayScalarRequest
 
 	// [Mandatory] The fields to be deleted.
 	repeated string fields = 3;
+
+	// [Mandatory] The dates to be deleted.
+	repeated google.type.DateTime dates = 4;
 }
 
+
+// The required input to request DeleteIntradayScalar.
+message DeleteIntradayVectorRequest 
+{
+	// [Mandatory] The instrument identifiers: a bloomberg ticker and an asset type
+	systemathics.apis.type.shared.v1.Identifier identifier = 1;
+
+	// [Mandatory] The sampling interval
+	systemathics.apis.type.shared.v1.Sampling sampling = 2;
+
+	// [Mandatory] The fields to be deleted.
+	repeated string fields = 3;
+
+	// [Mandatory] The keys to be deleted.
+	repeated VectorKey keys = 4;
+}
+
+
 // The required input to request the GetIntradayByDate endpoint
-message SetIntradayScalarInfo
+message SetIntradayInfo
 {
 	// [Mandatory] The instrument identifiers: a bloomberg ticker and an asset type
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
@@ -92,9 +228,6 @@ message SetIntradayScalarInfo
 
 	// [Mandatory] The data names.
 	repeated string fields = 3;
-
-	// Set the writing mode (write/overwrite or append)
-	systemathics.apis.type.shared.v2.SetDataMode mode = 4;
 }
 
 // Represent the data to be added to the data scalar timeseries.
@@ -105,5 +238,28 @@ message SetIntradayScalarData
 
 	// [Mandatory] The date used to request data.
 	repeated double data = 2;
+}
+
+// Represent the key for a vector.
+message VectorKey {
+	// [Mandatory] The date used to request data.
+	google.type.DateTime datetime = 1;
+
+	// [Mandatory] The vector key.
+	string key = 2;
+}
+ 
+
+// Represent the data to be added to the data vector timeseries.
+message SetIntradayVectorData
+{
+	// [Mandatory] The date used to request data.
+	google.type.DateTime datetime = 1;
+
+	// [Mandatory] The vector key.
+	string key = 2;
+
+	// [Mandatory] The data.
+	repeated double data = 3;
 }
  

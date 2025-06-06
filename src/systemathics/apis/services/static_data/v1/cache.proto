@@ -1,4 +1,4 @@
-// Copyright (c) 2021 Systemathics
+// Copyright (c) 2024 Systemathics
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,58 +19,23 @@
 // SOFTWARE.
 
 
-// The asset type
 syntax = "proto3";
 
 
-package systemathics.apis.type.shared.v1;
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "systemathics/apis/type/shared/v1/asset.proto";
 
-// Contains all asset types for the static data request.
-enum AssetType
-{
-	// Not specified ?
-	ASSET_TYPE_UNSPECIFIED = 0;
-	
-	// All asset types. Used only for search.
-    ASSET_TYPE_ALL = 1;
-	
-    // Equities
-    ASSET_TYPE_EQUITY = 2;
+package systemathics.apis.services.set_static_data.v1;
 
-	// Futures
-	ASSET_TYPE_FUTURE = 3;
-
-	// Exchange Traded Fund
-	ASSET_TYPE_ETF = 4;
-
-	// Index
-	ASSET_TYPE_INDEX = 5;
-
-	// Forex pairs
-	ASSET_TYPE_FOREX = 7;
-
-	// Options
-	ASSET_TYPE_OPTION = 8;
-
-	// Bonds
-	ASSET_TYPE_BOND = 9;
-
-	// Cds
-	ASSET_TYPE_CDS = 10;
-
-	// Cds index 
-	ASSET_TYPE_CDS_INDEX = 11;
-	
-	// Cds index tranche
-	ASSET_TYPE_CDS_INDEX_TRANCHE = 12;
-
-	// Cds index option
-	ASSET_TYPE_CDS_INDEX_OPTION = 13;
+// Called to request reference data.
+service CacheStaticDataService
+{   
+    rpc SetCache(systemathics.apis.type.shared.v1.AssetTypeRequest) returns (google.protobuf.Empty)
+    {
+         option (google.api.http) = {
+             get: "/v1/staticdata/cache/"
+         };
+    }
 }
 
-// Asset Type Request
-message AssetTypeRequest
-{    
-    // [Mandatory] The asset type of the static data.
-    systemathics.apis.type.shared.v1.AssetType asset_type = 1;
-}

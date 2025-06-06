@@ -36,7 +36,7 @@ import "google/protobuf/wrappers.proto";
 import "systemathics/apis/services/static_data/v1/static_data.proto";
 import "systemathics/apis/type/shared/v1/asset.proto";
 
-package systemathics.apis.services.static_data.v1;
+package systemathics.apis.services.set_static_data.v1;
 
 // Called to set static data.
 service SetStaticDataService
@@ -59,7 +59,7 @@ service SetStaticDataService
   }
 
   // Get all Cds Index Option Static data
-  rpc GetAll(AssetTypeRequest) returns (stream Asset)
+  rpc GetAll(systemathics.apis.type.shared.v1.AssetTypeRequest) returns (stream Asset)
   {
           option (google.api.http) = {
             get: "/v1/staticdata/{asset}"
@@ -84,11 +84,7 @@ service SetStaticDataService
 }
 
 
-message AssetTypeRequest
-{    
-    // [Mandatory] The asset type of the static data.
-    systemathics.apis.type.shared.v1.AssetType asset_type = 1;
-}
+
 
 message AssetIdRequest
 {
