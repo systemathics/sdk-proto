@@ -170,11 +170,11 @@ message StaticDataRequest
     // [Optional] Strike for options
     StaticDataDouble strike = 40;
 
-    // [Optional] Cds Index or Cds Index Tranche Company Name
-    string cds_company_name = 41;
+    // [Optional] Reference Entity Sector for Cds Index
+    string reference_entity_sector = 41;
 
     // [Optional] Cds Index or Cds Index Tranche Tenor
-    StaticDataDouble tenor = 42;
+    string tenor = 42;
 
     // [Optional] Cds Index Id for Cds Index Tranche
     string cds_index_id = 43;
@@ -191,8 +191,8 @@ message StaticDataRequest
     // [Optional] Swaption type for option (Payer/Receiver)
     SwaptionType swaption_type = 47;
 
-    // [Optional] Markit Ticker 
-    string markit_ticker = 48;
+    // [Optional] On the Run for Cds Index
+    google.protobuf.BoolValue on_the_run = 48;
 
     // [Optional] Market Status
     string market_status = 50;
@@ -1346,8 +1346,12 @@ message CdsIndexEntry
     double cds_recovery_rate = 16;
     // Markit Ticker
     string markit_ticker = 17;
-    // Is On the Run indicator
-    bool is_on_the_run = 18;
+    // On the Run indicator
+    bool on_the_run = 18;
+    // Generic Ticker
+    string generic_ticker = 19;
+    // BPIPE Ticker
+    string bpipe_ticker = 20;
 }
 
 // Contains the reference data for Credit default swap Index (CDS Index).
