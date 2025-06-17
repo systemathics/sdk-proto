@@ -1,0 +1,119 @@
+// Copyright (c) 2021 Systemathics
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// Bollinger bands were created by John Bollinger, they are envelopes and plotted around the moving average. 
+// <br> The width of the bands is based on the standard deviaton of the closing prices from a moving average as follows:
+// <br><i>- Middle band = n-period moving average</i>
+// <br><i>- Upper band = Middle band + (k * n-period standard deviation)</i>
+// <br><i>- Lower band = Middle band - (k * n-period standard deviation)</i>
+// <br><i> Where n is the number of periods and k is factor to apply to the standard deviation value, k=2 as default value.</i>
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+import "systemathics/apis/type/shared/v2/constraints.proto";
+import "systemathics/apis/type/shared/v2/identifier.proto";
+import "systemathics/apis/type/shared/v2/price.proto";
+import "systemathics/apis/type/shared/v2/decimals.proto";
+
+package systemathics.apis.services.tick_analytics.v2;
+
+// Called to request tick by tick Bollinger bands data. 
+service HpTickBollingerService 
+{
+	// Gets tick by tick Bollinger bands data
+    rpc HpTickBollinger(HpTickBollingerRequest) returns (stream HpTickBollingerResponse)
+	{
+	     option (google.api.http) = {
+			get: "/v2/tick-analytics/bollinger-hp"
+		 };
+	}
+}
+
+// The required inputs to request the HpTickBollingerService.
+message HpTickBollingerRequest 
+{
+    // [Mandatory] The instrument identifier: a ticker and exchange
+    systemathics.apis.type.shared.v2.Identifier identifier = 1;
+    
+    // [Optional] The time constraints used to define the look-back period.
+	// If empty, then all the available data is retrieved.
+    systemathics.apis.type.shared.v2.Constraints constraints = 2;
+	
+	// [Mandatory] The field used to build the Bollinger bands
+	systemathics.apis.type.shared.v2.Price field = 3;
+	
+	// [Mandatory] The simple moving average window length (period: data points number)
+	int32 length = 4;
+
+	// [Mandatory] The standard deviation window length
+	systemathics.apis.type.shared.v2.SignedDecimal deviation = 5; 
+
+    // [Optional] The period of the Bollinger bands, by default the period is set to one day
+    google.protobuf.Duration period = 6;
+
+    // [Optional] The offset time when the Bollinger bands is reset, by default the offset is set to 00:00:00
+    google.protobuf.Duration offset = 7;
+
+	// [Optional] The sampling of the tick data.
+	// If not set then the tick by tick data is used.
+	// If set, then the sma is built using sampled data.
+    google.protobuf.Duration sampling = 8;
+
+    // [Optional] The corporate action adjustment, by default the value is set to false
+    bool adjustment = 9;
+
+    // [Optional] Accept trading / quote conditions, by default the accept is set to null : accept all
+    repeated string accept = 10;
+
+    // [Optional] Rejected trading / quote conditions, by default the reject is set to null : do not reject
+    repeated string reject = 11;
+
+	// [Optional] The size of the buffering window. Default is null (let the server side decide). If set to a value in [[1; 1024]] the buffer will be flushed once every that many items, potentially improving overall bandwidth performance.
+	google.protobuf.Int32Value buffering_window_size = 13;
+}
+
+// Contains the tick Bollinger bands data: date, lower, middle and upper.
+message HpTickBollingerResponse
+{
+	// The time stamp of the bollinger bands
+	google.protobuf.Timestamp time_stamp = 1;
+	
+	// The data used to calculate the Bollinger bands of the day
+	systemathics.apis.type.shared.v2.SignedDecimal value = 2;
+
+	// Bollinger lower band value of the day
+	// <br><i>Lower band = Middle band - (k * n-period standard deviation)</i>
+	systemathics.apis.type.shared.v2.NullableSignedDecimal lower = 3;
+
+		// Bollinger middle band value of the day
+	// <br><i>Middle band = n-period moving average</i>
+	systemathics.apis.type.shared.v2.NullableSignedDecimal middle = 4;
+
+	// Bollinger upper band value of the day
+	// <br><i>Upper band = Middle band + (k * n-period standard deviation)</i>
+	systemathics.apis.type.shared.v2.NullableSignedDecimal upper = 5;
+
+	// Total frames processed up to now 
+	google.protobuf.UInt64Value total_processed_frames = 6;
+}

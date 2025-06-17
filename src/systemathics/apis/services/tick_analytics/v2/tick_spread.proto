@@ -1,0 +1,135 @@
+// Copyright (c) 2021 Systemathics
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// Calculate the bid ask spread analytics.
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+import "systemathics/apis/type/shared/v2/constraints.proto";
+import "systemathics/apis/type/shared/v2/identifier.proto";
+
+package systemathics.apis.services.tick_analytics.v2;
+
+// Called to request TickSpreadService. 
+service TickSpreadService 
+{
+	// Gets the Spread analytics
+    rpc TickSpread(TickSpreadRequest) returns (stream TickSpreadResponse)
+	{
+	     option (google.api.http) = {
+			get: "/v2/tick-analytics/spread"
+		 };
+	}
+}
+
+// The required input to request the TickSpreadService.
+message TickSpreadRequest 
+{
+    // [Mandatory] The instrument identifier: a ticker and exchange
+	systemathics.apis.type.shared.v2.Identifier identifier = 1;
+
+	// [Optional] The time constraints used to define the look-back period.
+	// If empty, then all the available data is retrieved.
+	systemathics.apis.type.shared.v2.Constraints constraints = 2;
+
+	// [Optional] The period of the bars, by default the period is set to one day
+	google.protobuf.Duration period = 3;
+
+	// [Optional] The offset time when the bars is reset, by default the offset is set to 00:00:00
+	google.protobuf.Duration offset = 4;
+
+	// [Optional] The minimum accepted spread value, by default is set to min double value : accept all
+	google.protobuf.DoubleValue min_accepted = 5;
+
+	// [Optional] The maximum accepted spread value, by default is set to max double value : accept all
+	google.protobuf.DoubleValue max_accepted = 6;
+
+	// [Optional] The corporate action adjustment, by default the value is set to false
+	bool adjustment = 7;
+
+	// [Optional] Accept quote conditions, by default the accept is set to null : accept all
+	repeated string accept = 8;
+
+	// [Optional] Rejected quote conditions, by default the reject is set to null : do not reject
+	repeated string reject = 9;
+
+	// [Optional] The size of the buffering window. Default is null (let the server side decide). If set to a value in [[1; 1024]] the buffer will be flushed once every that many items, potentially improving overall bandwidth performance.
+	google.protobuf.Int32Value buffering_window_size = 10;
+}
+
+// Contains the Spread data analytics.
+message TickSpreadResponse
+{
+	// The bid side values
+	SideData bid = 1;
+
+	// The ask side values
+	SideData ask = 2;
+	
+	// The last spread
+	double last = 3;
+
+	// The average spread
+	double average = 4;
+
+	// The min spread
+	double min = 5;
+
+	// The max spread
+	double max = 6;
+
+	// The ticks count
+	uint64 count = 7;
+
+	// The skipped count
+	uint64 skipped = 8;
+
+	// Total frames processed up to now 
+	google.protobuf.UInt64Value total_processed_frames = 9;
+}
+
+// Contains the side details.
+message SideData
+{    
+	// The last price
+	double last = 1;
+
+	// The average price
+	double average = 2;
+
+	// The vwap price
+	double vwap = 3;
+
+	// The min price
+	double min = 4;
+
+	// The max price
+	double max = 5;
+
+	// The total volume
+	int64 volume = 6;
+
+	// The ticks count
+	uint64 count = 7;
+}
+

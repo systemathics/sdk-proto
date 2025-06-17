@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+
+import "google/api/annotations.proto";
+
+import "systemathics/apis/type/shared/v1/memo.proto";
+import "systemathics/apis/type/shared/v1/identifier.proto";
+
+package systemathics.apis.services.private.v1;
+
+service IdentifierMappingService 
+{
+    rpc IdentifierMapping(IdentifierMappingRequest) returns (IdentifierMappingResponse)
+	{
+		option (google.api.http) = {
+			get: "/v1/identifiers"
+		};
+	}
+}
+
+message IdentifierMappingRequest 
+{
+	systemathics.apis.type.shared.v1.Memo memo = 1;
+}
+
+message IdentifierMappingResponse 
+{
+	systemathics.apis.type.shared.v1.Identifier identifier = 1;
+}
