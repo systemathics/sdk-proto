@@ -46,7 +46,7 @@ service IntradayPricesService
 // The required input to request the IntradayPricesService
 message IntradayPricesRequest
 {
-	// [Mandatory] The instrument identifier: a ticker and exchange 
+	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type 
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -71,7 +71,7 @@ message IntradayPricesResponse
 // Contains the intraday prices data: date, price, volume and score.
 message IntradayPrice 
 {
-	// Time stamp of the intraday price : open time of the sampling interval
+	// UTC time stamp of the intraday price : open time of the sampling interval
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Last price of the sampling period

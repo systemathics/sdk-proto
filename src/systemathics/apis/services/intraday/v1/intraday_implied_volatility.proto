@@ -47,7 +47,7 @@ service IntradayImpliedVolatilitiesService
 // The required input to request the IntradayImpliedVolatilitiesService
 message IntradayImpliedVolatilitiesRequest
 {
-	// [Mandatory] The instrument identifier: a ticker and exchange 
+	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type 
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -68,7 +68,7 @@ message IntradayImpliedVolatilitiesResponse
 // Contains the intraday impliedvolatilities data: date, implied volatility value.
 message IntradayImpliedVolatility 
 {
-	// Time stamp of the intraday settlement : open time of the sampling interval
+	// UTC time stamp of the intraday settlement : open time of the sampling interval
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// ImpliedVolatility value of the sampling period

@@ -18,19 +18,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Enables to set or to clear market data updates. Navigate to market book updates and market fields updates to discover how action is used.
+
+// The asset type
 syntax = "proto3";
 
 
-package systemathics.apis.type.shared.v1;
+package systemathics.apis.type.shared.v2;
 
-// Contains the market Data update action.
-enum Action
+// Contains all mode to add intraday scalar data.
+enum SetDataMode 
 {
-    // The unspecfied action
-    ACTION_UNSPECIFIED = 0;
-    // The set action
-    ACTION_SET = 1;
-    // The clear action
-    ACTION_CLEAR = 2;
+	// Not specified
+	SET_DATA_MODE_UNSPECIFIED = 0;
+	
+	// Write mode, will fail if files already exists.
+    SET_DATA_MODE_WRITE = 1;
+
+	// Append mode
+	SET_DATA_MODE_APPEND = 2;
+
+	// Overwrite mode. Will erase existing file. Will fail if existing file don't exists.
+	SET_DATA_MODE_OVERWRITE = 3;
 }
