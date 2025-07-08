@@ -170,29 +170,26 @@ message StaticDataRequest
     // [Optional] Strike for options
     StaticDataDouble strike = 40;
 
-    // [Optional] Reference Entity Sector for Cds Index
-    string reference_entity_sector = 41;
+    // [Optional] Sub family for Cds Index
+    string cds_index_sub_family = 41;
 
     // [Optional] Cds Index or Cds Index Tranche Tenor
     string tenor = 42;
 
-    // [Optional] Cds Index Id for Cds Index Tranche
-    string cds_index_id = 43;
-
-    // [Optional] Cds Index Rolling Series
-    StaticDataInt rolling_series = 44;
+    // [Optional] Cds Index Series
+    StaticDataInt cds_index_series = 44;
 
     // [Optional] Cds Index Version
-    StaticDataInt version = 45;
+    StaticDataInt cds_index_version = 45;
 
-    // [Optional] Cds Reference Entity Data (RED) Pair Code
-    string cds_red_pair_code = 46;
+    // [Optional] Cds Index Reference Entity Data (RED) Pair Code
+    string cds_index_red_pair_code = 46;
 
     // [Optional] Swaption type for option (Payer/Receiver)
     SwaptionType swaption_type = 47;
 
     // [Optional] On the Run for Cds Index
-    google.protobuf.BoolValue on_the_run = 48;
+    google.protobuf.BoolValue cds_index_on_the_run = 48;
 
     // [Optional] Market Status
     string market_status = 50;
@@ -1306,52 +1303,55 @@ message BondEntry
 
     // Discovery Source Ticker. Not a Bloomberg field.
     google.protobuf.StringValue discovery_source_ticker = 53;
-
 }
 
-// Contains the reference data for Credit default swap Index (CDS Index).
+// Contains the reference data for Credit Default Swap Index (CDS Index).
 message CdsIndexEntry
 {
-    // Identifiers: The instrument identifier: a bloomberg ticker and an asset type 
-    systemathics.apis.type.shared.v1.Identifier identifier =  1;
-    // General information: Name of the company or brief description of the instrument. Bloomberg field : NAME
-    string name =  2;
-    // General information: Indicates if the financial instrument is currently active. Bloomberg field : EXCH_MARKET_STATUS
-    bool active =  3;    
-    // General information: Currency in which the instrument was issued. (ISO 4217). Bloomberg field : CRNCY
-    string currency =  4;
-    // General information: A brief description of the instrument. Bloomberg field : SECURITY_DES
-    string description = 5;
-    // Cds compagny name. Bloomberg field : CDS_COMPANY_NAME
-    string cds_company_name =  6;
-    // Day Count. Bloomberg field : DAY_CNT_DES
-    DayCount day_count = 7;
-    // Tenor. Bloomberg field : TENOR
-    string tenor =  8;
-    // Maturity. Bloomberg field : MATURITY
+    // Identifiers: The instrument identifier: a custom ticker and an asset type 
+    systemathics.apis.type.shared.v1.Identifier identifier = 1;
+    // General information: Name of the CDS index or brief description of the instrument. From /data/index[*]/indexname
+    string name = 2;
+    // General information: Indicates if the financial instrument is currently active. Computed with maturity and current date.
+    bool active = 3;    
+    // General information: Currency in which the instrument was issued. (ISO 4217). From /data/index[*]/ccy
+    string currency = 4;
+    // General information: Payment frequency. From /data/index[*]/paymentfrequency
+    string payment_frequency = 5;
+    // General information: Effective Date. From /data/index[*]/effectivedate
+    google.type.Date effective_date = 6;
+    // General information: Annex Date. From /data/index[*]/annexdate
+    google.type.Date annex_date = 7;
+    // Tenor. From /data/index[*]/terms/term[*]/tenor
+    string tenor = 8;
+    // Maturity. From /data/index[*]/terms/term[*]/maturity
     google.type.Date maturity = 9;
-    // Reference Entity sector. Bloomberg field : REFERENCE_ENTITY_SECTOR
-    string reference_entity_sector = 10;
-    // Feid Eid 4. Bloomberg field : FEED_EID4
-    string feed_eid_4 = 11;
-    // Rolling Series. Bloomberg field : ROLLING_SERIES
-    int32 rolling_series = 12;
-    // Cds Version. Bloomberg field : VERSION
+    // General information: Index family. From /data/index[*]/
+    string family = 10;
+    // General information: Index sub family. From /data/index[*]/indexfamily
+    string sub_family = 11;
+    // Series. From /data/index[*]/indexsubfamily
+    int32 series = 12;
+    // Version. From /data/index[*]/series
     int32 version = 13;
-    // Cds First accrual date. Bloomberg field : CDS_FIRST_ACCRUAL_START_DATE
-    google.type.Date first_accrual_date = 14;
-    // Cds reference entity data (RED) pair code. Bloomberg field : CDS_RED_PAIR_CODE
-    string cds_red_pair_code = 15;
-    // Cds Index recovery. Bloomberg field: CDS_RR
-    double cds_recovery_rate = 16;
-    // Markit Ticker
-    string markit_ticker = 17;
-    // On the Run indicator
+    // Version first dates. From /data/index[*]/activeDate
+    repeated google.type.Date version_first_dates = 14;
+    // Reference entity data (RED) pair code. From /data/index[*]/redindexcode
+    repeated string cds_red_pair_codes = 15;
+    // Recovery rate. From /data/index[*]/recoveryrate
+    double recovery_rate = 16;
+    // First Payment Date. From /data/index[*]/firstpaymentdate
+    google.type.Date first_payment_date = 17;
+    // On the Run indicator. From /data/index[*]/onTheRun
     bool on_the_run = 18;
-    // Generic Ticker
-    string generic_ticker = 19;
-    // BPIPE Ticker
-    string bpipe_ticker = 20;
+    // Constituents. From /data/index[*]/constituents/constituent[*]/refEntity/originalConstituent/referenceentity
+    repeated string constituents = 19;
+    // Defaulted constituents. From /data/index[*]/constituents/constituent[*][/refEntity/originalConstituent/weight = 0]/refEntity/originalConstituent/referenceentity
+    repeated string defaulted_constituents = 20;
+    // Factors. From /data/index[*]/indexfactor
+    repeated double factors = 21;
+    // Coupon. From /data/index[*]/terms/term[*]/coupon
+    double coupon = 22;
 }
 
 // Contains the reference data for Credit default swap Index (CDS Index).
