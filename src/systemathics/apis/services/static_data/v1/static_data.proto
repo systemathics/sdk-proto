@@ -201,6 +201,9 @@ message StaticDataByIdentifiersRequest
 {
     // Asset Type
     repeated systemathics.apis.type.shared.v1.Identifier identifiers = 1;
+
+    // [Optional] As of Date
+    google.type.Date as_of_date = 2;
 }
 
 
