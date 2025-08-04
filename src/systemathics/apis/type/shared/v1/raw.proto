@@ -18,22 +18,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
-// The asset type
+// The raw data content.
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
 
 package systemathics.apis.type.shared.v1;
 
-// Contains the option types : call or put.
-enum OptionType
+// Contains the primary data, not processed or normalized (identical to provider's data).
+message Raw
 {
-    // Not specified ?
-    OPTION_TYPE_UNSPECIFIED = 0;
+	// The instrument mapping key: short code for instrument identifier.
+	uint32 mapping = 1;
+
+	// The time stamp of the raw data (UTC)
+	google.protobuf.Timestamp time_stamp = 2;
+
+	// The data type.
+	uint32 type = 3;
     
-    // Call
-    OPTION_TYPE_CALL = 1;
-    
-       // Put
-    OPTION_TYPE_PUT = 2;
+	// The payload data.
+	bytes payload = 4;
 }

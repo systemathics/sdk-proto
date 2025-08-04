@@ -36,7 +36,7 @@ package systemathics.apis.services.intraday.v1;
 service IntradayGreeksService
 {
   // Gets intraday historical greeks data.
-  rpc IntradayGreeks(IntradayGreeksRequest) returns (IntradayGreeksResponse)
+  rpc IntradayGreeks(IntradayGreeksRequest) returns (stream IntradayGreek)
   {
 	  	 option (google.api.http) = {
 			get: "/v1/intraday/greeks"
@@ -47,7 +47,7 @@ service IntradayGreeksService
 // The required input to request the IntradayGreeksService.
 message IntradayGreeksRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
+	// [Mandatory] The instrument identifier: a ticker and exchange
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -58,17 +58,10 @@ message IntradayGreeksRequest
 	systemathics.apis.type.shared.v1.DateInterval date_interval = 3;
 }
 
-// The intraday greeks response contains an array of intraday greeks.
-message IntradayGreeksResponse
-{
-	// The intraday greeks: an array of IntradayGreeks objects
-	repeated IntradayGreeks data = 1;
-}
-
 // Contains the intraday greeks data.
-message IntradayGreeks 
+message IntradayGreek 
 {
-	// UTC time stamp of the intraday greeks
+	// Time stamp of the intraday greeks
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Measures the sensitivity of an option's theoretical value to a change in the price of the underlying asset.

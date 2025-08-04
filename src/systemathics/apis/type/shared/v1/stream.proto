@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Systemathics
+// Copyright (c) 2021 Systemathics
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,24 +18,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
+// Enables to set or to clear market data updates. Navigate to market book updates and market fields updates to discover how action is used.
 syntax = "proto3";
 
 
-import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
-import "systemathics/apis/type/shared/v1/asset.proto";
+package systemathics.apis.type.shared.v1;
 
-package systemathics.apis.services.set_static_data.v1;
-
-// Called to request reference data.
-service CacheStaticDataService
-{   
-    rpc SetCache(systemathics.apis.type.shared.v1.AssetTypeRequest) returns (google.protobuf.Empty)
-    {
-         option (google.api.http) = {
-             get: "/v1/staticdata/cache/"
-         };
-    }
+// Contains the market Data update action.
+enum Stream
+{
+    // The unspecfied stream
+    STREAM_UNSPECIFIED = 0;
+    // The stream only containing fields updates (see field.proto).
+    STREAM_FIELDS_ONLY = 1;
+    // The stream with market book updates (see mbl_market_book_updates.proto and mbo_market_book_updates.proto) along with fields updates.
+    STREAM_MARKETBOOK_AND_FIELDS= 2;
 }
-

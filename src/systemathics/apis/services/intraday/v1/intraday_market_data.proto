@@ -49,7 +49,7 @@ service IntradayMarketDataService
 // The required input to request the IntradayMarketDataService.
 message IntradayMarketDataRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
+	// [Mandatory] The instrument identifier: a ticker and exchange
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -70,7 +70,7 @@ message IntradayMarketDataResponse
 // Contains the intraday market data information.
 message IntradayMarketData 
 {
-	// UTC time stamp of the intraday market data
+	// Time stamp of the intraday market data
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Open price of the sampling period
@@ -89,16 +89,16 @@ message IntradayMarketData
 	double volume = 6;
 
 	// The best bid price of the sampling period
-	double bid_price = 7;
+	double BidPrice = 7;
 	
 	// The best bid size of the sampling period
-	double bid_size = 8;
+	double BidSize = 8;
 	
 	// The best ask price of the sampling period
-	double ask_price = 9;
+	double AskPrice = 9;
 	
 	// The best ask size of the sampling period
-	double ask_size = 10;
+	double AskSize = 10;
 
 	// Measures the sensitivity of an option's theoretical value to a change in the price of the underlying asset.
 	//<br>It indicates the expected change in the option price for a one-point change in the underlying asset. 

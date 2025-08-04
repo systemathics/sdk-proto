@@ -40,14 +40,7 @@ package systemathics.apis.services.intraday.v1;
 service IntradayBarsService
 {
   // Gets intraday historical data: date, open, high, low, close and volume
-  rpc IntradayBars(IntradayBarsRequest) returns (IntradayBarsResponse)
-  {
-	  	 option (google.api.http) = {
-			get: "/v1/intraday/bars"
-		 };
-  }
-
-  rpc IntradayBarsStream(IntradayBarsRequest) returns (stream IntradayBar)
+  rpc IntradayBars(IntradayBarsRequest) returns (stream IntradayBar)
   {
 	  	 option (google.api.http) = {
 			get: "/v1/intraday/bars"
@@ -58,7 +51,7 @@ service IntradayBarsService
 // The required input to request the IntradayBarsService.
 message IntradayBarsRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
+	// [Mandatory] The instrument identifier: a ticker and exchange
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -73,17 +66,10 @@ message IntradayBarsRequest
 	bool adjustment = 4;
 }
 
-// The intraday bars response contains an array of intraday bars.
-message IntradayBarsResponse
-{
-	// The intraday bars: an array of IntradayBar objects
-	repeated IntradayBar data = 1;
-}
-
 // Contains the intraday bar's data: date, open, high, low, close, volume, count, vwap and score.
 message IntradayBar 
 {
-	// UTC time stamp of the intraday bar : open time of the sampling interval
+	// Time stamp of the intraday bar : open time of the sampling interval
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Open price of the sampling period

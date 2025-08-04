@@ -18,59 +18,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
-// The asset type
+// The market book data
 syntax = "proto3";
 
+import "systemathics/apis/type/shared/v1/limit.proto";
 
 package systemathics.apis.type.shared.v1;
 
-// Contains all asset types for the static data request.
-enum AssetType
+// The book : bid and ask arrays
+message Book
 {
-	// Not specified ?
-	ASSET_TYPE_UNSPECIFIED = 0;
-	
-	// All asset types. Used only for search.
-    ASSET_TYPE_ALL = 1;
-	
-    // Equities
-    ASSET_TYPE_EQUITY = 2;
+	// The bid array : buy side
+	repeated Limit bid = 1;
 
-	// Futures
-	ASSET_TYPE_FUTURE = 3;
-
-	// Exchange Traded Fund
-	ASSET_TYPE_ETF = 4;
-
-	// Index
-	ASSET_TYPE_INDEX = 5;
-
-	// Forex pairs
-	ASSET_TYPE_FOREX = 7;
-
-	// Options
-	ASSET_TYPE_OPTION = 8;
-
-	// Bonds
-	ASSET_TYPE_BOND = 9;
-
-	// Cds
-	ASSET_TYPE_CDS = 10;
-
-	// Cds index 
-	ASSET_TYPE_CDS_INDEX = 11;
-	
-	// Cds index tranche
-	ASSET_TYPE_CDS_INDEX_TRANCHE = 12;
-
-	// Cds index option
-	ASSET_TYPE_CDS_INDEX_OPTION = 13;
-}
-
-// Asset Type Request
-message AssetTypeRequest
-{    
-    // [Mandatory] The asset type of the static data.
-    systemathics.apis.type.shared.v1.AssetType asset_type = 1;
+	// The ask array : sell side
+	repeated Limit ask = 2;
 }

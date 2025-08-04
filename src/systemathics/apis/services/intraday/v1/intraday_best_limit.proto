@@ -46,7 +46,7 @@ service IntradayBestLimitsService
 // The required input to request the IntradayBestLimitsService.
 message IntradayBestLimitsRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
+	// [Mandatory] The instrument identifier: a ticker and exchange
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -71,20 +71,20 @@ message IntradayBestLimitsResponse
 // Contains the intraday bar's data: date, bid, ask and score.
 message IntradayBestLimit 
 {
-	// UTC time stamp of the intraday bar : open time of the sampling interval
+	// Time stamp of the intraday bar : open time of the sampling interval
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// The best bid price of the sampling period
-	double bid_price = 2;
+	double BidPrice = 2;
 	
 	// The best bid size of the sampling period
-	double bid_size = 3;
+	double BidSize = 3;
 	
 	// The best ask price of the sampling period
-	double ask_price = 4;
+	double AskPrice = 4;
 	
 	// The best ask size of the sampling period
-	double ask_size = 5;
+	double AskSize = 5;
 	
 	// The data quality scoring : from 0 (bad) to 100 (good)
 	double score = 6;

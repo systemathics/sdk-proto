@@ -35,7 +35,7 @@ package systemathics.apis.services.intraday.v1;
 service IntradayPricesService
 {
   // Gets intraday historical prices
-  rpc IntradayPrices(IntradayPricesRequest) returns (IntradayPricesResponse)
+  rpc IntradayPrices(IntradayPricesRequest) returns (stream IntradayPrice)
   {
 	  option (google.api.http) = {
 			get: "/v1/intraday/prices"
@@ -46,7 +46,7 @@ service IntradayPricesService
 // The required input to request the IntradayPricesService
 message IntradayPricesRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type 
+	// [Mandatory] The instrument identifier: a ticker and exchange 
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -61,17 +61,10 @@ message IntradayPricesRequest
 	bool adjustment = 4;
 }
 
-// Represents a intraday prices response.
-message IntradayPricesResponse
-{
-	// The intraday prices: an array of IntradayPrice objects
-	repeated IntradayPrice data = 1;
-}
-
 // Contains the intraday prices data: date, price, volume and score.
 message IntradayPrice 
 {
-	// UTC time stamp of the intraday price : open time of the sampling interval
+	// Time stamp of the intraday price : open time of the sampling interval
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Last price of the sampling period
