@@ -46,7 +46,7 @@ service IntradayOpenInterestsService
 // The required input to request the IntradayOpenInterestsService
 message IntradayOpenInterestsRequest
 {
-	// [Mandatory] The instrument identifier: a ticker and exchange 
+	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type 
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
 	// [Mandatory] The sampling interval
@@ -67,7 +67,7 @@ message IntradayOpenInterestsResponse
 // Contains the intraday openinterests data: date, openinterest value.
 message IntradayOpenInterest 
 {
-	// Time stamp of the intraday openinterest : open time of the sampling interval
+	// UTC time stamp of the intraday openinterest : open time of the sampling interval
 	google.protobuf.Timestamp time_stamp = 1;
 	
 	// OpenInterest value of the sampling period

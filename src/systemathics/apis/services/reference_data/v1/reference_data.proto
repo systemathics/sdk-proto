@@ -23,7 +23,7 @@ syntax = "proto3";
 
 import "google/api/annotations.proto";
 
-import "systemathics/apis/services/static_data/v1/static_data.proto";
+import "systemathics/apis/type/shared/v1/asset.proto";
 
 import "systemathics/apis/services/daily/v1/daily_bars.proto";
 import "systemathics/apis/services/daily/v1/daily_prices.proto";
@@ -33,6 +33,7 @@ import "systemathics/apis/services/daily/v1/daily_open_interest.proto";
 import "systemathics/apis/services/daily/v1/daily_implied_volatility.proto";
 import "systemathics/apis/services/daily/v1/daily_settlement.proto";
 import "systemathics/apis/services/daily/v1/daily_greeks.proto";
+import "systemathics/apis/services/daily/v1/daily_market_data.proto";
 
 import "systemathics/apis/services/corporate_actions/v1/dividends.proto";
 import "systemathics/apis/services/corporate_actions/v1/splits.proto";
@@ -55,13 +56,10 @@ service ReferenceService
 message ReferenceRequest
 {
 	// The asset class type
-	systemathics.apis.services.static_data.v1.AssetType asset_type = 1;
+	systemathics.apis.type.shared.v1.AssetType asset_type = 1;
 
 	// The ticker code
 	string ticker = 2;
-
-	// The exchange code
-	string exchange = 3;
 }
 
 // Represents a reference data response.
@@ -96,4 +94,7 @@ message ReferenceResponse
 
 	// The split reference data
 	systemathics.apis.services.corporate_actions.v1.Split split  = 10;
+
+	// The daily market data
+	systemathics.apis.services.daily.v1.DailyMarketData market_data  = 11;
 }

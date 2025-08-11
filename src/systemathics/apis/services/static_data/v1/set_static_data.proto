@@ -1,0 +1,121 @@
+// Copyright (c) 2021 Systemathics
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// Reference data encompasses a wide range of specification data about:
+// <br>- financial instrument such as asset class, symbol, maturity, etc.
+// <br>- counterparties such as issuer information.
+// <br>- pricing such as open, high low and close prices.
+// <br>- The challenge with reference data is that it tends to be sourced from multiple sources: internal, counterparties and providers.
+// <br>- Reference data dedicated service is a result of various data sources and fields sourcing, validation, cross-checking and normalization.
+syntax = "proto3";
+
+
+import "google/api/annotations.proto";
+import "google/type/datetime.proto";
+import "google/type/date.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+import "systemathics/apis/services/static_data/v1/static_data.proto";
+import "systemathics/apis/type/shared/v1/asset.proto";
+
+package systemathics.apis.services.set_static_data.v1;
+
+// Called to set static data.
+service SetStaticDataService
+{
+  // Create Cds Index Option Static data 
+  rpc Create(CreateAssetRequest) returns (Asset)
+  {
+          option (google.api.http) = {
+            post: "/v1/staticdata/{asset}"
+        };
+  }
+
+
+  // Get Cds Index Option Static data by Id
+  rpc GetOne(AssetIdRequest) returns (Asset)
+  {
+          option (google.api.http) = {
+            get: "/v1/staticdata/{asset}/{id}"
+        };
+  }
+
+  // Get all Cds Index Option Static data
+  rpc GetAll(systemathics.apis.type.shared.v1.AssetTypeRequest) returns (stream Asset)
+  {
+          option (google.api.http) = {
+            get: "/v1/staticdata/{asset}"
+        };
+  }
+
+  // Update an Asset by Id
+  rpc Update(Asset) returns (Asset)
+  {
+        option (google.api.http) = {
+            put: "/v1/staticdata/{asset}/{id}"
+        };
+  }
+
+  // Get Option Static data from OTC Streaming by Id
+  rpc Delete(AssetIdRequest) returns (google.protobuf.Empty)
+  {
+          option (google.api.http) = {
+            delete: "/v1/staticdata/{asset}/{id}"
+        };
+  }
+}
+
+
+
+
+message AssetIdRequest
+{
+    // [Mandatory] The Id of the static data.
+    int64 id = 1;
+
+    // [Mandatory] The asset type of the static data.
+    systemathics.apis.type.shared.v1.AssetType asset_type = 2;
+}
+
+message CreateAssetRequest
+{
+    // Validity Date
+    google.type.Date validity = 1;
+
+    oneof asset {
+        systemathics.apis.services.static_data.v1.CdsIndexEntry cds_index = 2;
+    }
+}
+
+message Asset
+{
+    // Id
+    int64 id  = 1;
+
+    // Validity Date
+    google.type.Date validity = 2;
+
+    oneof asset {
+        systemathics.apis.services.static_data.v1.CdsIndexEntry cds_index = 3;
+    }
+}
+
+
