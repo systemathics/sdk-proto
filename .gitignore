@@ -1,1 +1,4 @@
-/gen/*
+/gen
+/python_gen
+/docs_gen
+/ts_gen
