@@ -3,3 +3,5 @@ plugins:
   # TypeScript
   - remote: buf.build/bufbuild/es:v2.7.0
     out: /gen
+    opt:
+    - target=ts
