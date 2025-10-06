@@ -1,0 +1,339 @@
+// Copyright (c) 2021 Systemathics
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// Customizable screener to retrieve reference data : this is a prototype, to be completed
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "google/type/date.proto";
+import "google/type/timeofday.proto";
+import "google/protobuf/empty.proto";
+
+package systemathics.apis.services.calendar.v1;
+
+// Called to request screener data.
+service CalendarService
+{
+	// Gets currencies with holidays information 
+	rpc GetHolidayCode(google.protobuf.Empty) returns (stream HolidayInfo)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/holidays"
+		};
+	}
+	
+	// Gets mapping from holiday code to mic
+	rpc HolidayCodeToMics(google.protobuf.Empty) returns (HolidayCodeToMicsResponse)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/holiday_code_2_mics"
+		};
+	}
+	
+	// Gets holidays with code and year
+	rpc Holidays(HolidaysRequest) returns (HolidaysResponse)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/holidays"
+		};
+	}
+	
+	// Gets mic code with trading hours information
+	rpc TradingHoursMic(google.protobuf.Empty) returns (TradingHoursMicResponse)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/trading_hours/mics"
+		};
+	}
+
+	rpc TradingHoursDates(TradingHoursDateRequest) returns (TradingHoursDateResponse)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/trading_hours/dates"
+		};
+	}
+	
+	// Gets mic code with trading hours information
+	rpc Mic(google.protobuf.Empty) returns (stream MicRecord)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/mics"
+		};
+	}
+
+	rpc TradingHours(TradingHoursRequest) returns (TradingHoursMessage)
+	{
+	 	option (google.api.http) = {
+			get: "/v1/calendar/trading_hours"
+		};
+	}
+
+}
+
+
+// Type of holiday
+enum HolidayType
+{
+	// Unspecified
+	HOLIDAY_TYPE_UNSPECIFIED = 0;
+
+	// Holiday applied to futures trading
+	HOLIDAY_TYPE_FUTURES_TRADING = 1;
+
+	// Holiday applied to stock exchange trading
+	HOLIDAY_TYPE_STOCK_EXCHANGE_TRADING = 2;	
+}
+
+
+
+message HolidayInfo 
+{
+	// Holiday code
+	string code = 1;
+
+	// Country
+	string country = 2;
+
+	// Currency
+	string currency = 3;
+
+	// Holiday tYPE
+	HolidayType type = 4;
+
+	// MICs associated with Holiday Code
+	repeated string mics = 5;
+
+	// Available years for Holiday dates
+	repeated int32 years = 6;
+}
+
+// The Holiday code to array of MIC response
+message HolidayCodeToMicsResponse
+{
+	// Items with Holiday code to MIC information
+	repeated HolidayCodeToMicsItem items = 1;
+}
+
+// Mapping between a holiday code and several MICs
+message HolidayCodeToMicsItem
+{
+	// The holiday code
+	string holiday_code = 1;
+
+	// The MICs
+	repeated string mics = 2;
+}
+
+message TradingHoursDateRequest
+{
+	// Trading Hours Year. Default to current year if absent.
+	google.protobuf.Int32Value year = 1;
+}
+
+message TradingHoursDateResponse
+{
+	// Trading Hours Year
+	int32 year = 1;
+
+	// Days with trading hours for this year
+	repeated google.type.Date trading_days = 2;
+}
+
+
+// The required input to request Holidays.
+message HolidaysRequest
+{
+	// Holiday code
+	string holiday_code = 1;
+
+	// Holiday Year. Default to current year if absent.
+	google.protobuf.Int32Value year = 2;
+}
+
+// Represents Holidays for a given code and year
+message HolidaysResponse
+{
+	// Holiday code
+	string holiday_code = 1;
+
+	// Holiday Year.
+	int32 year = 2;
+
+	// Holidays dates. All closed days.
+	repeated google.type.Date closed_days = 3;
+}
+
+// Mic with trading hours 
+message TradingHoursMicResponse
+{
+	repeated string mics = 1;
+}
+
+// The required input to request Trading Hours .
+message TradingHoursRequest
+{
+	// Mic code
+	string mic = 1;
+
+	// [Optional] Trade Date. Default to current day.
+	google.type.Date trade_date = 2;
+}
+
+
+message MicRecord
+{
+	string mic = 1;
+
+	// Type of Mic
+	enum MicType
+	{
+		// Unspecified
+		MIC_TYPE_UNSPECIFIED = 0;
+
+		// Operator Mic
+		MIC_TYPE_OPERATOR = 1;
+
+		// Segment Mic
+		MIC_TYPE_SEGMENT = 2;
+	}
+
+
+
+	MicType mic_type = 2;
+
+	string operating_mic = 3;
+
+	string description = 4;
+
+	string legal_entity_name = 5;
+
+	// LEI identifier
+	string legal_entity_identifier = 6;
+
+	enum CategoryCode {
+	  // Unspecified value (typically used as default)
+	  NSPD = 0;
+  
+	  // Alternative Trading System
+	  ATSS = 1;
+  
+	  // Approved Publication Arrangement
+	  APPA = 2;
+  
+	  // Approved Reporting Mechanism
+	  ARMS = 3;
+  
+	  // Consolidated Tape Provider
+	  CTPS = 4;
+  
+	  // Crypto Asset Services Provider
+	  CASP = 5;
+  
+	  // Designated Contract Market
+	  DCMS = 6;
+  
+	  // Inter-Dealer Quotation System
+	  IDQS = 7;
+  
+	  // Multilateral Trading Facility
+	  MLTF = 8;
+  
+	  // Organised Trading Facility
+	  OTFS = 9;
+  
+	  // Other
+	  OTHR = 10;
+  
+	  // Recognised Market Operator
+	  RMOS = 11;
+  
+	  // Regulated Market
+	  RMKT = 12;
+  
+	  // Swap Execution Facility
+	  SEFS = 13;
+  
+	  // Systematic Internaliser
+	  SINT = 14;
+  
+	  // Trade Reporting Facility
+	  TRFS = 15;
+	}
+
+	CategoryCode market_category_code = 7;
+
+	google.protobuf.StringValue acronym = 8;
+
+	string iso_country_code = 9;
+
+	string city = 10;
+
+	google.protobuf.StringValue website = 11; 
+
+	
+	// Status of Mic
+	enum MicStatus
+	{
+		// Unspecified
+		MIC_STATUS_UNSPECIFIED = 0;
+
+		// Active Mic
+		MIC_STATUS_ACTIVE = 1;
+
+		// Expired Mic
+		MIC_STATUS_EXPIRED = 2;
+
+		// Updated Mic
+		MIC_STATUS_UPDATED = 3;
+	}
+
+	MicStatus status = 12;
+
+	google.type.Date creation_date = 13;
+
+	google.type.Date last_update_date = 14;
+
+	google.type.Date last_validation_date = 15;
+
+	google.type.Date expiry_date = 16;
+
+	google.protobuf.StringValue comment = 17;
+
+	string time_zone = 18;
+}
+
+message TradingHoursMessage 
+{
+	// Mic code
+	string mic = 1;
+
+	// Trade Date
+	google.type.Date trade_date = 2;
+
+	google.type.TimeOfDay order_accepted = 3;
+	google.type.TimeOfDay early_open = 4;
+
+	google.type.TimeOfDay open = 5;
+
+	google.type.TimeOfDay close = 6;
+
+	google.type.TimeOfDay late_close = 7;
+}

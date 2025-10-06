@@ -18,31 +18,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Instrument identifier is built from:
-// <br>- An exchange code: MIC
-// <br>- A ticker: instrument name given by the exchange
-// <br>- An optional provider name if several tick data providers are used
+// Defines the intraday sampling intervals.
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
-
-import "systemathics/apis/type/shared/v1/asset.proto";
 
 package systemathics.apis.type.shared.v1;
 
-// Contains the instrument identifier.
-message Identifier
+// Contains the intraday sampling intervals.
+enum Sampling
 {
-	// Asset of the identifier
-	systemathics.apis.type.shared.v1.AssetType asset_type = 1;
-
-	// Ticker name, associated with market idenfier code defines a unique asset
-	string ticker = 2;	
-
-	// Market idenfier code (MIC), associated with ticker defines a unique asset
-	google.protobuf.StringValue exchange = 3;
-	
-	// Optional provider tick data name if several tick data providers are used
-	google.protobuf.StringValue provider = 4;
-	
+    // The unspecifed interval
+    SAMPLING_UNSPECIFIED = 0;
+    // The one minute interval
+    SAMPLING_ONE_MINUTE = 1;
+    // The five minutes interval
+    SAMPLING_FIVE_MINUTE = 2;
+    // The ten minutes interval
+    SAMPLING_TEN_MINUTE = 3;
+    // The fifteen minutes interval
+    SAMPLING_FIFTEEN_MINUTE = 4;
+    // The thirty minutes interval
+    SAMPLING_THIRTY_MINUTE = 5;
+    // The one hour interval
+    SAMPLING_ONE_HOUR = 6;
 }

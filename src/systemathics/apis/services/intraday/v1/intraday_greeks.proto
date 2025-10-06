@@ -24,48 +24,52 @@ syntax = "proto3";
 
 
 import "google/api/annotations.proto";
-import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
 
 import "systemathics/apis/type/shared/v1/identifier.proto";
 import "systemathics/apis/type/shared/v1/date_interval.proto";
+import "systemathics/apis/type/shared/v1/sampling.proto";
 
-package systemathics.apis.services.daily.v1;
+package systemathics.apis.services.intraday.v1;
 
-// Called to request daily greeks data. 
-service DailyGreeksService
+// Called to request intraday greeks data. 
+service IntradayGreeksService
 {
-  // Gets daily historical greeks
-  rpc DailyGreeks(DailyGreeksRequest) returns (DailyGreeksResponse)
+  // Gets intraday historical greeks data.
+  rpc IntradayGreeks(IntradayGreeksRequest) returns (IntradayGreeksResponse)
   {
-	  option (google.api.http) = {
-			get: "/v1/daily/greeks"
-	  };
+	  	 option (google.api.http) = {
+			get: "/v1/intraday/greeks"
+		 };
   }
 }
 
-// The required input to request the DailyGreeksService
-message DailyGreeksRequest
+// The required input to request the IntradayGreeksService.
+message IntradayGreeksRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type 
+	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
-	// [Optional] The date interval used to define the look-back period.
+	// [Mandatory] The sampling interval
+	systemathics.apis.type.shared.v1.Sampling sampling = 2;
+
+	// [Optional] The time constraints used to define the look-back period.
 	// If empty, then all the available data is retrieved.
-	systemathics.apis.type.shared.v1.DateInterval date_interval = 2;
+	systemathics.apis.type.shared.v1.DateInterval date_interval = 3;
 }
 
-// Represents a daily greeks response.
-message DailyGreeksResponse
+// The intraday greeks response contains an array of intraday greeks.
+message IntradayGreeksResponse
 {
-	// The daily greeks: an array of DailyGreeks objects
-	repeated DailyGreeks data = 1;
+	// The intraday greeks: an array of IntradayGreeks objects
+	repeated IntradayGreeks data = 1;
 }
 
-// Contains the daily greeks data.
-message DailyGreeks 
+// Contains the intraday greeks data.
+message IntradayGreeks 
 {
-	// Date of the greeks
-	google.type.Date date = 1;
+	// UTC time stamp of the intraday greeks
+	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Measures the sensitivity of an option's theoretical value to a change in the price of the underlying asset.
 	//<br>It indicates the expected change in the option price for a one-point change in the underlying asset. 

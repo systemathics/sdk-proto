@@ -18,31 +18,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Instrument identifier is built from:
-// <br>- An exchange code: MIC
-// <br>- A ticker: instrument name given by the exchange
-// <br>- An optional provider name if several tick data providers are used
+// Customizable screener to retrieve reference data : this is a prototype, to be completed
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
-import "systemathics/apis/type/shared/v1/asset.proto";
+import "systemathics/apis/services/calendar/v1/calendar.proto";
 
-package systemathics.apis.type.shared.v1;
+package systemathics.apis.services.calendar.v1;
 
-// Contains the instrument identifier.
-message Identifier
+// Called to request screener data.
+service TradingHoursService
 {
-	// Asset of the identifier
-	systemathics.apis.type.shared.v1.AssetType asset_type = 1;
+	// Gets currencies with holidays information 
+	rpc SetTradingHours(SetTradingHoursRequest) returns (google.protobuf.Empty)
+	{
+	 	option (google.api.http) = {
+			post: "/v1/calendar/trading_hours"
+		};
+	}
+}
 
-	// Ticker name, associated with market idenfier code defines a unique asset
-	string ticker = 2;	
-
-	// Market idenfier code (MIC), associated with ticker defines a unique asset
-	google.protobuf.StringValue exchange = 3;
-	
-	// Optional provider tick data name if several tick data providers are used
-	google.protobuf.StringValue provider = 4;
-	
+message SetTradingHoursRequest
+{
+	repeated systemathics.apis.services.calendar.v1.TradingHoursMessage trading_hours = 1;
 }

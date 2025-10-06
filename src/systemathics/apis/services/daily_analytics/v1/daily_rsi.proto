@@ -18,8 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Daily bars are widely used to illustrate price movements for an instrument over a look back period. 
-// Commonly used in financial analysis and trading strategies as a technical indicator.
+// <i>The Relative Strength Index</i>, developed by J. Welles Wilder measures the speed and change of price movements.
+// <br>RSI oscillates between zero and 100. Traditionally the RSI is considered <i>overbought</i> when above 70 and <i>oversold</i> when below 30.
+// <br><br>RSI is computed as follows: $$ RSI = 100 - \frac{100}{1 + RS} $$ Where:
+// <br>- <i>RS = AvgU/AvgD</i> is the <i>relative strength
+// <br>- <i>AvgU</i> average of last <i>N close prices</i> up moves
+// <br>- <i>AvgD</i> average of last <i>N close prices</i> down moves
+// <br>- <i>N</i> is the period of the RSI
 syntax = "proto3";
 
 
@@ -29,22 +34,22 @@ import "google/type/date.proto";
 import "systemathics/apis/type/shared/v1/identifier.proto";
 import "systemathics/apis/type/shared/v1/date_interval.proto";
 
-package systemathics.apis.services.daily.v1;
+package systemathics.apis.services.daily_analytics.v1;
 
-// Called to request daily bars data. 
-service DailyBarsService
+// Called to request daily relative strength index data. 
+service DailyRsiService
 {
-  // Gets daily historical data: date, open, high, low, close and volume
-  rpc DailyBars(DailyBarsRequest) returns (DailyBarsResponse)
+  // Gets daily relative strength index data
+  rpc DailyRsi(DailyRsiRequest) returns (DailyRsiResponse)
   {
 	  option (google.api.http) = {
-			get: "/v1/daily/bars"
+			get: "/v1/daily-analytics/rsi"
 	  };
   }
 }
 
-// The required input to request the DailyBarsService.
-message DailyBarsRequest
+// The required input to request the DailyRsiService.
+message DailyRsiRequest
 {
 	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
@@ -53,40 +58,31 @@ message DailyBarsRequest
 	// If empty, then all the available data is retrieved.
 	systemathics.apis.type.shared.v1.DateInterval date_interval = 2;
 
+	// [Mandatory] The relative strength index window length (period: points number)
+	int32 length = 3;
+
 	// [Optional] The corporate action adjustment (dividends).
 	// By default the value is set to false : the split is applied in all cases
-	bool adjustment = 3;
+	bool adjustment = 4;
 }
 
-// The daily bars response contains an array of daily bars.
-message DailyBarsResponse
+// Represents a daily relative strength index response.
+message DailyRsiResponse
 {
-	// The daily bars: an array of DailyBar objects
-	repeated DailyBar data = 1;
+	// The daily relative strength index: an array of DailyRsiData objects
+	repeated DailyRsiData data = 1;
 }
 
-// Contains the daily bar's data: date, open, high, low, close and volume.
-message DailyBar 
+// Contains the daily relative strength index data: date and value.
+message DailyRsiData 
 {
-	// Date of the bar
+	// Date of the relative strength index
 	google.type.Date date = 1;
 	
-	// Open price of the day
-	double open = 2;
-	
-	// Highest price of the day
-	double high = 3;
-	
-	// Lowest price of the day
-	double low = 4;
-	
-	// Close price of the day
-	double close = 5;
-	
-	// Total traded volume of the day
-	double volume = 6;
+	// The data used to calculate the relative strength index of the day
+	double value = 2;
 
-	// The data quality scoring : from 0 (bad) to 100 (good)
-	double score = 7;
+	// Relative strength index value of the day
+	double rsi = 3;
 }
  

@@ -18,31 +18,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Instrument identifier is built from:
-// <br>- An exchange code: MIC
-// <br>- A ticker: instrument name given by the exchange
-// <br>- An optional provider name if several tick data providers are used
+
+// The asset type
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
-
-import "systemathics/apis/type/shared/v1/asset.proto";
 
 package systemathics.apis.type.shared.v1;
 
-// Contains the instrument identifier.
-message Identifier
+// Contains the option types : call or put.
+enum OptionType
 {
-	// Asset of the identifier
-	systemathics.apis.type.shared.v1.AssetType asset_type = 1;
-
-	// Ticker name, associated with market idenfier code defines a unique asset
-	string ticker = 2;	
-
-	// Market idenfier code (MIC), associated with ticker defines a unique asset
-	google.protobuf.StringValue exchange = 3;
-	
-	// Optional provider tick data name if several tick data providers are used
-	google.protobuf.StringValue provider = 4;
-	
+    // Not specified ?
+    OPTION_TYPE_UNSPECIFIED = 0;
+    
+    // Call
+    OPTION_TYPE_CALL = 1;
+    
+       // Put
+    OPTION_TYPE_PUT = 2;
 }

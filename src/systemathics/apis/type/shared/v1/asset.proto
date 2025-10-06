@@ -18,31 +18,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Instrument identifier is built from:
-// <br>- An exchange code: MIC
-// <br>- A ticker: instrument name given by the exchange
-// <br>- An optional provider name if several tick data providers are used
+
+// The asset type
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
-
-import "systemathics/apis/type/shared/v1/asset.proto";
 
 package systemathics.apis.type.shared.v1;
 
-// Contains the instrument identifier.
-message Identifier
+// Contains all asset types for the static data request.
+enum AssetType
 {
-	// Asset of the identifier
-	systemathics.apis.type.shared.v1.AssetType asset_type = 1;
-
-	// Ticker name, associated with market idenfier code defines a unique asset
-	string ticker = 2;	
-
-	// Market idenfier code (MIC), associated with ticker defines a unique asset
-	google.protobuf.StringValue exchange = 3;
+	// Not specified ?
+	ASSET_TYPE_UNSPECIFIED = 0;
 	
-	// Optional provider tick data name if several tick data providers are used
-	google.protobuf.StringValue provider = 4;
+	// All asset types. Used only for search.
+    ASSET_TYPE_ALL = 1;
 	
+    // Equities
+    ASSET_TYPE_EQUITY = 2;
+
+	// Futures
+	ASSET_TYPE_FUTURE = 3;
+
+	// Crypto
+	ASSET_TYPE_CRYPTO = 4;
 }

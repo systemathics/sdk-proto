@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This service provides access to an daily marketdata market data service,
+// This service provides access to an intraday marketdata market data service,
 // enabling users to retrieve historical market data for various financial instruments.
 // MarketData represents a comprehensive aggregation of all pertinent market information, 
 // encompassing various data points such as bar data, best limit data, Greeks, and more.
@@ -26,48 +26,52 @@ syntax = "proto3";
 
 
 import "google/api/annotations.proto";
-import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
 
 import "systemathics/apis/type/shared/v1/identifier.proto";
 import "systemathics/apis/type/shared/v1/date_interval.proto";
+import "systemathics/apis/type/shared/v1/sampling.proto";
 
-package systemathics.apis.services.daily.v1;
+package systemathics.apis.services.intraday.v1;
 
-// Called to request daily MarketData data. 
-service DailyMarketDataService
+// Called to request intraday marketdata data. 
+service IntradayMarketDataService
 {
-  // Gets daily historical marketdata
-  rpc DailyMarketData(DailyMarketDataRequest) returns (DailyMarketDataResponse)
+  // Gets intraday historical data
+  rpc IntradayMarketData(IntradayMarketDataRequest) returns (IntradayMarketDataResponse)
   {
-	  option (google.api.http) = {
-			get: "/v1/daily/marketdata"
-	  };
+	  	 option (google.api.http) = {
+			get: "/v1/intraday/marketdata"
+		 };
   }
 }
 
-// The required input to request the DailyMarketDataService
-message DailyMarketDataRequest
+// The required input to request the IntradayMarketDataService.
+message IntradayMarketDataRequest
 {
-	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type 
+	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
 
-	// [Optional] The date interval used to define the look-back period.
+	// [Mandatory] The sampling interval
+	systemathics.apis.type.shared.v1.Sampling sampling = 2;
+
+	// [Optional] The time constraints used to define the look-back period.
 	// If empty, then all the available data is retrieved.
-	systemathics.apis.type.shared.v1.DateInterval date_interval = 2;
+	systemathics.apis.type.shared.v1.DateInterval date_interval = 3;
 }
 
-// Represents a daily marketdata response.
-message DailyMarketDataResponse
+// The intraday marketdata response contains an array of intraday marketdata.
+message IntradayMarketDataResponse
 {
-	// The daily marketdata : an array of DailyMarketData objects
-	repeated DailyMarketData data = 1;
+	// The intraday marketdata: an array of IntradayMarketData objects
+	repeated IntradayMarketData data = 1;
 }
 
-// Contains the daily marketdatas information.
-message DailyMarketData 
+// Contains the intraday market data information.
+message IntradayMarketData 
 {
-	// Date of the marketdata
-	google.type.Date date = 1;
+	// UTC time stamp of the intraday market data
+	google.protobuf.Timestamp time_stamp = 1;
 	
 	// Open price of the sampling period
 	double open = 2;
@@ -127,106 +131,10 @@ message DailyMarketData
 	// OpenInterest value of the sampling period
 	double open_interest = 17;
 
-	// Underlying price of the sampling period
+	// Underlying value of the sampling period
 	double underlying = 18;
 
-	// The implied volatility for a 30-day call option
-	double implied_volatility_30_call = 19;
-
-	// The implied volatility for a 30-day put option
-	double implied_volatility_30_put = 20;
-
-	// The mean implied volatility for a 30-day period.
-	double implied_volatility_30_mean = 21;
-
-	// The implied volatility for a 60-day call option
-	double implied_volatility_60_call = 22;
-
-	// The implied volatility for a 60-day put option
-	double implied_volatility_60_put = 23;
-
-	// The mean implied volatility for a 60-day period.
-	double implied_volatility_60_mean = 24;
-
-	// The implied volatility for a 90-day call option
-	double implied_volatility_90_call = 25;
-
-	// The implied volatility for a 90-day put option
-	double implied_volatility_90_put = 26;
-
-	// The mean implied volatility for a 90-day period.
-	double implied_volatility_90_mean = 27;
-
-	// The implied volatility for a 120-day call option
-	double implied_volatility_120_call = 28;
-
-	// The implied volatility for a 120-day put option
-	double implied_volatility_120_put = 29;
-
-	// The mean implied volatility for a 120-day period.
-	double implied_volatility_120_mean = 30;
-
-	// The implied volatility for a 150-day call option
-	double implied_volatility_150_call = 31;
-
-	// The implied volatility for a 150-day put option
-	double implied_volatility_150_put = 32;
-
-	// The mean implied volatility for a 150-day period.
-	double implied_volatility_150_mean = 33;
-
-	// The implied volatility for a 180-day call option
-	double implied_volatility_180_call = 34;
-
-	// The implied volatility for a 180-day put option
-	double implied_volatility_180_put = 35;
-
-	// The mean implied volatility for a 180-day period.
-	double implied_volatility_180_mean = 36;
-
-	// The implied volatility for a 360-day call option
-	double implied_volatility_360_call = 37;
-
-	// The implied volatility for a 360-day put option
-	double implied_volatility_360_put = 38;
-
-	// The mean implied volatility for a 360-day period.
-	double implied_volatility_360_mean = 39;
-
-	// The volume of call options traded for the current day.
-	double call_volume = 40;
-
-	// The volume of put options traded for the current day.
-	double put_volume = 41;
-
-	// The total volume of options traded for the current day.
-	double total_volume = 42;
-
-	// The call Open Interest (number of open call contracts) at the beginning of the trading session.
-	double call_open_interest = 43;
-
-	// The put Open Interest (number of open put contracts) at the beginning of the trading session.
-	double put_open_interest = 44;
-
-	// The Open Interest (number of open put and call contracts) at the beginning of the trading session.
-	double total_open_interest = 45;
-
 	// The data quality scoring : from 0 (bad) to 100 (good)
-	double score = 46;
-
-	// The implied volatility bid.
-	double implied_volatility_bid = 47;
-
-	// The implied volatility ask.
-	double implied_volatility_ask = 48;
-
-	// The implied volatility mean.
-	double implied_volatility_mean = 49;
-
-	// The option symbol
-	string option_symbol = 50;
-
-	// The total number of outstanding options contracts that have not been exercised or expired yet, as of the next trading day.
-	double t1_open_interest = 51;
+	double score = 19;
 }
  

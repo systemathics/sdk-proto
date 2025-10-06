@@ -18,8 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Daily bars are widely used to illustrate price movements for an instrument over a look back period. 
-// Commonly used in financial analysis and trading strategies as a technical indicator.
+// <i>Moving Average Convergence/Divergence Oscillator</i> was developed by Gerald Appel and represents the difference between two moving averages of different lengths.
+// <br>As its name implies, MACD is all about convergence and divergence of the two moving averages. MACD oscilaltes around the zero line as follows:
+// <br>- positive values increase as the shorter moving average diverges further from the longer one
+// <br>- negative values indicate that the shorter moving average is below the longer one
+// <br><br>MACD is computed as follows: $$ MACD = short EMA - long EMA $$
 syntax = "proto3";
 
 
@@ -29,22 +32,22 @@ import "google/type/date.proto";
 import "systemathics/apis/type/shared/v1/identifier.proto";
 import "systemathics/apis/type/shared/v1/date_interval.proto";
 
-package systemathics.apis.services.daily.v1;
+package systemathics.apis.services.daily_analytics.v1;
 
-// Called to request daily bars data. 
-service DailyBarsService
+// Called to request daily moving average convergence divergence data. 
+service DailyMacdService
 {
-  // Gets daily historical data: date, open, high, low, close and volume
-  rpc DailyBars(DailyBarsRequest) returns (DailyBarsResponse)
+  // Gets daily moving average convergence divergence data
+  rpc DailyMacd(DailyMacdRequest) returns (DailyMacdResponse)
   {
 	  option (google.api.http) = {
-			get: "/v1/daily/bars"
+			get: "/v1/daily-analytics/macd"
 	  };
   }
 }
 
-// The required input to request the DailyBarsService.
-message DailyBarsRequest
+// The required input to request the DailyMacdService.
+message DailyMacdRequest
 {
 	// [Mandatory] The instrument identifier: a bloomberg ticker and an asset type
 	systemathics.apis.type.shared.v1.Identifier identifier = 1;
@@ -53,40 +56,40 @@ message DailyBarsRequest
 	// If empty, then all the available data is retrieved.
 	systemathics.apis.type.shared.v1.DateInterval date_interval = 2;
 
+	// [Mandatory] The long EMA window length (period : points number)
+	int32 long = 3;
+
+	// [Mandatory] The short EMA window length (period : points number)
+	int32 short = 4;
+
 	// [Optional] The corporate action adjustment (dividends).
 	// By default the value is set to false : the split is applied in all cases
-	bool adjustment = 3;
+	bool adjustment = 5;
 }
 
-// The daily bars response contains an array of daily bars.
-message DailyBarsResponse
+// Represents a daily moving average convergence divergence response.
+message DailyMacdResponse
 {
-	// The daily bars: an array of DailyBar objects
-	repeated DailyBar data = 1;
+	// The daily moving average convergence/divergence: an array of DailyMacdData objects
+	repeated DailyMacdData data = 1;
 }
 
-// Contains the daily bar's data: date, open, high, low, close and volume.
-message DailyBar 
+// Contains the daily moving average convergence/divergence data: date and value.
+message DailyMacdData 
 {
-	// Date of the bar
+	// Date of the moving average convergence/divergence
 	google.type.Date date = 1;
 	
-	// Open price of the day
-	double open = 2;
-	
-	// Highest price of the day
-	double high = 3;
-	
-	// Lowest price of the day
-	double low = 4;
-	
-	// Close price of the day
-	double close = 5;
-	
-	// Total traded volume of the day
-	double volume = 6;
+	// The data used to calculate the average convergence/divergence of the day
+	double value = 2;
 
-	// The data quality scoring : from 0 (bad) to 100 (good)
-	double score = 7;
+	// The moving average convergence/divergence value of the day
+	double macd = 3;
+
+	// The short exponential moving average value of the day
+	double short = 4;
+
+	// The long exponential moving average value of the day
+	double long = 5;
 }
  

@@ -18,31 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Instrument identifier is built from:
-// <br>- An exchange code: MIC
-// <br>- A ticker: instrument name given by the exchange
-// <br>- An optional provider name if several tick data providers are used
+// Represents a time interval used to delimit historical data requests in time. Time is Universal Time Coordinated (UTC).
 syntax = "proto3";
 
-import "google/protobuf/wrappers.proto";
 
-import "systemathics/apis/type/shared/v1/asset.proto";
+import "google/type/timeofday.proto";
 
 package systemathics.apis.type.shared.v1;
 
-// Contains the instrument identifier.
-message Identifier
+// Contains time interval with start_time (included) and end_time (excluded)
+message TimeInterval 
 {
-	// Asset of the identifier
-	systemathics.apis.type.shared.v1.AssetType asset_type = 1;
-
-	// Ticker name, associated with market idenfier code defines a unique asset
-	string ticker = 2;	
-
-	// Market idenfier code (MIC), associated with ticker defines a unique asset
-	google.protobuf.StringValue exchange = 3;
-	
-	// Optional provider tick data name if several tick data providers are used
-	google.protobuf.StringValue provider = 4;
-	
+    // Start time of the time interval. It must always be smaller than end time
+    google.type.TimeOfDay start_time = 1;
+    
+    // End time of the time interval. It must always be greater than start time
+    google.type.TimeOfDay end_time = 2;
 }
