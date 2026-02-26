@@ -1,0 +1,161 @@
+// Copyright (c) 2021 Systemathics
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+
+// Date filter supporting exact match or range queries
+//
+// <p>Use for temporal filtering of instruments (maturity, issue date, etc.)</p>
+// <p>Ranges are left-inclusive, right-exclusive: [greater_or_equal_than, less_than)</p>
+
+syntax = "proto3";
+
+import "google/type/date.proto";
+import "google/protobuf/wrappers.proto";
+import "google/api/field_behavior.proto";
+
+package systemathics.apis.type.shared.v1;
+
+message DateFilter
+{
+    oneof oneof
+    {
+        // Match exact date
+        //
+        // Example: Find futures expiring exactly on 2024-12-15
+        // Usage: exact { year: 2024, month: 12, day: 15 }
+        google.type.Date exact = 1 [(google.api.field_behavior) = OPTIONAL];
+
+        // Match date range
+        //
+        // Example: Find all Q1 2024 expirations
+        // Usage:
+        //   range {
+        //     greater_or_equal_than { year: 2024, month: 1, day: 1 },
+        //     less_than { year: 2024, month: 4, day: 1 }
+        //   }
+        DateFilterRange range = 2 [(google.api.field_behavior) = OPTIONAL];
+    }
+}
+
+// Date range specification for filtering
+//
+// <p>Implements half-open interval: [greater_or_equal_than, less_than)</p>
+// <p>Both bounds are optional; omitting creates open-ended range</p>
+message DateFilterRange
+{
+    // Upper bound date (exclusive)
+    //
+    // Results will have dates strictly before this value.
+    // Omit for open-ended upper range (no maximum).
+    google.type.Date less_than = 1 [(google.api.field_behavior) = OPTIONAL];
+    
+    // Lower bound date (inclusive)
+    //
+    // Results will have dates on or after this value.
+    // Omit for open-ended lower range (no minimum).
+    google.type.Date greater_or_equal_than = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Double/decimal filter for numeric values
+//
+// <p>Supports exact matching or range-based filtering.</p>
+// <p>Used for prices, volumes, market caps, and other continuous numeric attributes.</p>
+message DoubleFilter
+{
+    oneof oneof
+    {
+        // Match exact value
+        //
+        // Example: Find instruments with price exactly $100.00
+        double exact = 1 [(google.api.field_behavior) = OPTIONAL];
+
+        // Match numeric range
+        //
+        // Example: Find instruments with prices between $50-$200
+        // Usage: range { greater_or_equal_than: 50.0, less_than: 200.0 }
+        DoubleFilterRange range = 2 [(google.api.field_behavior) = OPTIONAL];
+    }
+}
+
+// Double range specification for filtering
+//
+// <p>Half-open interval: [greater_or_equal_than, less_than)</p>
+// <p>Both bounds are optional for open-ended ranges</p>
+message DoubleFilterRange
+{
+    // Upper bound value (exclusive)
+    //
+    // Results will have values strictly less than this.
+    // Omit for no upper limit.
+    google.protobuf.DoubleValue less_than = 1 [(google.api.field_behavior) = OPTIONAL];
+    
+    // Lower bound value (inclusive)
+    //
+    // Results will have values greater than or equal to this.
+    // Omit for no lower limit.
+    google.protobuf.DoubleValue greater_or_equal_than = 2 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Integer filter for whole number values
+//
+// <p>Supports exact matching or range-based filtering.</p>
+// <p>Used for counts, quantities, capitalization, and other integer-valued attributes.</p>
+message IntFilter
+{
+    oneof oneof
+    {
+        // Match exact integer value
+        //
+        // Example: Find instruments with market cap exactly 1 billion
+        // Usage: exact = 1000000000
+        int64 exact = 1 [(google.api.field_behavior) = OPTIONAL];
+
+        // Match integer range
+        //
+        // Example: Find large-cap stocks (market cap $10B-$200B)
+        // Usage:
+        //   range { 
+        //     greater_or_equal_than: 10000000000, 
+        //     less_than: 200000000000 
+        //   }
+        IntFilterRange range = 2 [(google.api.field_behavior) = OPTIONAL];
+    }
+}
+
+// Integer range specification for filtering
+//
+// <p>Half-open interval: [greater_or_equal_than, less_than)</p>
+// <p>Both bounds are optional for open-ended ranges</p>
+message IntFilterRange
+{
+    // Upper bound value (exclusive)
+    //
+    // Results will have values strictly less than this.
+    // Omit for no upper limit.
+    // Example: less_than = 10000000000 means "values up to but not including 10 billion"
+    google.protobuf.Int64Value less_than = 1 [(google.api.field_behavior) = OPTIONAL];
+    
+    // Lower bound value (inclusive)
+    //
+    // Results will have values greater than or equal to this.
+    // Omit for no lower limit.
+    // Example: greater_or_equal_than = 1000000000 means "values 1 billion and above"
+    google.protobuf.Int64Value greater_or_equal_than = 2 [(google.api.field_behavior) = OPTIONAL];
+}

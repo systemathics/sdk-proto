@@ -34,6 +34,12 @@ enum OptionType
     // Call
     OPTION_TYPE_CALL = 1;
     
-       // Put
+    // Put
     OPTION_TYPE_PUT = 2;
+
+    // Pay
+    OPTION_TYPE_PAY = 3;
+
+    // Receive
+    OPTION_TYPE_REC = 4;
 }
