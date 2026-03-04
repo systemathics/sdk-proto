@@ -66,10 +66,10 @@ service DailyService
 	  };
   }
 
-  rpc DailyOptionUnderlierStream(DailyOptionUnderlierRequest) returns (stream DailyUnderlierOptionStream)
+  rpc DailyOptionUnderlierWithStrikeTypeStream(DailyOptionUnderlierWithStrikeTypeRequest) returns (stream DailyUnderlierOptionWithStrikeTypeStream)
   {
       option (google.api.http) = {
-            get: "/v2/daily_option_underlier/"
+            get: "/v2/daily_option_underlier_with_strike_type/"
       };
   }
   // Gets all available fields by asset and provider.
@@ -223,7 +223,7 @@ message DailyFieldsItemResponse
 	repeated string fields = 3;
 }
 
-message DailyOptionUnderlierRequest
+message DailyOptionUnderlierWithStrikeTypeRequest
 {
     systemathics.apis.type.shared.v1.Identifier identifier = 1 [(google.api.field_behavior) = REQUIRED];
     systemathics.apis.type.shared.v1.DateInterval date_interval = 2 [(google.api.field_behavior) = REQUIRED];
@@ -236,18 +236,18 @@ message DailyOptionUnderlierRequest
 }
 
 
-message DailyUnderlierOptionStream
+message DailyUnderlierOptionWithStrikeTypeStream
 {
     oneof payload
     {
         DailyStreamFields info = 1 [(google.api.field_behavior) = OPTIONAL];
 
-        DailyUnderlierOptionStreamItem double_data = 2 [(google.api.field_behavior) = OPTIONAL];
+        DailyUnderlierOptionWithStrikeTypeStreamItem double_data = 2 [(google.api.field_behavior) = OPTIONAL];
     }
 }
 
 
-message DailyUnderlierOptionStreamItem
+message DailyUnderlierOptionWithStrikeTypeStreamItem
 {
     google.type.Date date = 1 [(google.api.field_behavior) = REQUIRED];
 		

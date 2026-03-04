@@ -34,6 +34,9 @@ enum StrikeType
     // Fixed strike
     STRIKE_TYPE_FIXED = 1;
     
-    // Floating strike
-    STRIKE_TYPE_FLOATING = 2;
+    // Floating strike by delta
+    STRIKE_TYPE_FLOATING_DELTA = 2;
+
+    // Floating strike by bp
+    STRIKE_TYPE_FLOATING_BP = 3;
 }
